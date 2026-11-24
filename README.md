@@ -332,18 +332,34 @@ The vault stack operates in harmony with existing infrastructure components on t
 
 ---
 
-## 8. Verification & Operational Security Checklist
+## 8. Security Audit & Production Hardening (Peer-Reviewed)
+
+An extensive third-party cybersecurity audit was conducted on the production stack. All identified vulnerabilities and configuration discrepancies have been remediated. For full technical details, logs, and verification commands, see the [Security Audit Report](SECURITY_AUDIT_REPORT.md).
+
+### Summary of Audit Remediations:
+* **CFS CPU Limits Enforced:** Replaced unsupported Swarm keys with Linux kernel CFS parameters (`cpu_quota: 50000`, `cpu_period: 100000`) guaranteeing a strict 0.5 vCPU cap.
+* **Credential Isolation:** Decoupled `BACKUP_PASSPHRASE` from `.env` and container environment. Relocated to `.backup.env` (`chmod 600 root:root`), mitigating risk of container RCE exposing backup keys.
+* **Maintenance Script Hardening:** Restriced `backup.sh` to `chmod 700 root:root`.
+* **Perimeter Lockdown:** Blocked `/admin` endpoint at Nginx level (`location /admin { deny all; return 404; }`) and rotated administrative token secret.
+* **Image Immutability:** Pinned Docker tag to release `vaultwarden/server:1.37.5`.
+* **Multiplexed Ingress:** Verified HTTP/2 multiplexing and native WebSocket tunneling over port 8088.
+* **Host SSH Hardening:** Neutralized continuous password brute-force attacks (>13,970 attempts) by enforcing Ed25519 public key authentication and disabling `PasswordAuthentication` and `KbdInteractiveAuthentication`.
+
+---
+
+## 9. Verification & Operational Security Checklist
 
 - [x] **Zero-Knowledge Proof:** Verified client-side cryptographic key generation via Web Crypto API.
 - [x] **Strict TLS Termination:** Qualys SSL Labs A+ rating on `vault.davlatyarov.uz` with strict HSTS and forward secrecy.
 - [x] **Network Isolation:** Vaultwarden port 8088 bound strictly to loopback (`127.0.0.1`), unreachable directly from WAN.
 - [x] **Registration Disabled:** Public account registration blocked (`SIGNUPS_ALLOWED=false`).
-- [x] **Admin Hardening:** Admin dashboard protected with Argon2id hash token.
-- [x] **Memory & CPU Caps:** Container bounded at 256MB RAM / 0.5 vCPU to prevent starvation of co-located services.
-- [x] **Encrypted Backups:** Daily automated atomic SQLite snapshots ciphered via GPG / OpenSSL AES-256.
+- [x] **Admin Route Blocked:** Direct external access to `/admin` returns HTTP 404.
+- [x] **Memory & CPU Caps:** Container bounded at 256MB RAM / 0.5 vCPU (Linux CFS verified).
+- [x] **Isolated Encrypted Backups:** Daily automated atomic SQLite snapshots ciphered via GPG AES-256 with isolated credentials.
+- [x] **SSH Hardened:** Host-level password authentication completely disabled; Ed25519 keypair authentication only.
 
 ---
 
-## 9. License & Attribution
+## 10. License & Attribution
 
 This project is licensed under the **MIT License**. Maintained and authored by **Muhammadqodir Davlatyorov** as part of the BSc Cybersecurity Portfolio.

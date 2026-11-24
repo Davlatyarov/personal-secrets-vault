@@ -5,6 +5,10 @@
 .backup.env
 *.backup.env
 
+# Explicitly permit sanitized templates
+!.env.example
+!.backup.env.example
+
 # Vaultwarden persistent data directory (SQLite db, RSA keys, attachments)
 data/
 db.sqlite3*
