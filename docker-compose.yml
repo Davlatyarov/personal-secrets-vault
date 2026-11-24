@@ -12,14 +12,9 @@ services:
     ports:
       # Bound strictly to loopback to prevent direct external bypass of Nginx TLS
       - "127.0.0.1:8088:80"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 256M
-        reservations:
-          cpus: '0.10'
-          memory: 64M
+    cpu_quota: 50000
+    cpu_period: 100000
+    mem_limit: 256m
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/alive"]
       interval: 30s

@@ -1,10 +1,13 @@
 server {
-	listen      %ip%:%proxy_ssl_port% ssl;
+	listen      %ip%:%proxy_ssl_port% ssl http2;
 	server_name %domain_idn% %alias_idn%;
 	error_log   /var/log/%web_system%/domains/%domain%.error.log error;
 
 	ssl_certificate     %ssl_pem%;
 	ssl_certificate_key %ssl_key%;
+
+	# HTTP/2 directive for modern Nginx
+	http2 on;
 
 	# TLS 1.3 0-RTT anti-replay
 	if ($anti_replay = 307) { return 307 https://$host$request_uri; }
@@ -23,6 +26,12 @@ server {
 	client_max_body_size 128m;
 
 	location ~ /\.(?!well-known\/|file) {
+		deny all;
+		return 404;
+	}
+
+	# Security Hardening: Block external access to admin panel
+	location /admin {
 		deny all;
 		return 404;
 	}
