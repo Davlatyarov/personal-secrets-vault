@@ -1,0 +1,22 @@
+# Environment and secrets
+.env
+*.env.local
+
+# Vaultwarden persistent data directory (SQLite db, RSA keys, attachments)
+data/
+db.sqlite3*
+
+# Automated backup archives and encryption keys
+backups/
+*.tar.gz
+*.gpg
+*.enc
+*.backup
+
+# Logs
+*.log
+logs/
+
+# Operating system artifacts
+.DS_Store
+Thumbs.db
