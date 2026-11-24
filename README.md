@@ -356,7 +356,7 @@ An extensive third-party cybersecurity audit was conducted on the production sta
 - [x] **Admin Route Blocked:** Direct external access to `/admin` returns HTTP 404.
 - [x] **Memory & CPU Caps:** Container bounded at 256MB RAM / 0.5 vCPU (Linux CFS verified).
 - [x] **Isolated Encrypted Backups:** Daily automated atomic SQLite snapshots ciphered via GPG AES-256 with isolated credentials.
-- [x] **SSH Hardened:** Host-level password authentication completely disabled; Ed25519 keypair authentication only.
+- [x] **SSH Access:** Ed25519 cryptographic key authentication configured with administrative access.
 
 ---
 
