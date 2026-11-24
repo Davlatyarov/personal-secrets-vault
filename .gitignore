@@ -1,6 +1,9 @@
-# Environment and secrets
+# Environment and secrets (Zero-Leakage Policy)
 .env
-*.env.local
+*.env
+*.env.*
+.backup.env
+*.backup.env
 
 # Vaultwarden persistent data directory (SQLite db, RSA keys, attachments)
 data/
