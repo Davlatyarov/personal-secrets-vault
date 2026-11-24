@@ -3,7 +3,7 @@
 **Project:** Project 4 — Zero-Knowledge Secrets & Password Management Vault  
 **Author:** Muhammadqodir Davlatyorov  
 **Institution:** BSc Cybersecurity, International Digital University / University of Wolverhampton Programme  
-**Target Host:** Production Ubuntu VPS (`79.132.143.211`, Frankfurt)  
+**Target Host:** Hardened Production Ubuntu VPS (<SERVER_IP>, Frankfurt)  
 **Domain:** `https://vault.davlatyarov.uz`  
 **Date of Audit & Remediation:** November 2026  
 **Status:** All Vulnerabilities Remediated & Production Hardened  
@@ -105,9 +105,8 @@ curl -sI https://vault.davlatyarov.uz/admin
 Log inspection revealed active dictionary attacks against the SSH daemon (>13,970 failed attempts recorded in `/var/log/auth.log`). 
 
 **Hardening Actions Taken:**
-1. A 256-bit Ed25519 keypair was provisioned on the administrator's workstation (`C:\Users\Давлатяров\.ssh\id_ed25519`).
-2. The public key was injected into `/root/.ssh/authorized_keys`:
-   `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG7JkylM7/+JYHiETLkdkYaPTJNMTAmYwKIK1jVg2yoE muhammadqodir-laptop`
+1. A dedicated 256-bit Ed25519 keypair was generated for administrator authentication.
+2. The public key was provisioned into `/root/.ssh/authorized_keys` with strict permissions.
 3. Tested and confirmed passwordless cryptographic authentication from the local workstation.
 4. Hardened `/etc/ssh/sshd_config.d/01-disable-password.conf`:
    ```sshconfig
@@ -119,9 +118,9 @@ Log inspection revealed active dictionary attacks against the SSH daemon (>13,97
 
 **Verification of Attack Neutralization:**
 ```powershell
-ssh -o PubkeyAuthentication=no -o PreferredAuthentications=password root@79.132.143.211
+ssh -o PubkeyAuthentication=no -o PreferredAuthentications=password root@<SERVER_IP>
 # Output:
-# root@79.132.143.211: Permission denied (publickey).
+# root@<SERVER_IP>: Permission denied (publickey).
 ```
 Password-based authentication is completely disallowed at the protocol level.
 
